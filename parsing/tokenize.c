@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbenoit <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: moouahab <moouahab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 08:31:13 by rbenoit           #+#    #+#             */
-/*   Updated: 2024/03/15 08:31:14 by rbenoit          ###   ########.fr       */
+/*   Updated: 2024/03/22 17:06:55 by moouahab         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ char	*get_quoted_word(char *input, size_t *i, char quote)
 
 	(*i)++;
 	len = ft_strlen_c(input + *i, quote);
+	if (len == 0)
+		return (NULL);
 	word = ft_calloc(sizeof(char), len + 1);
 	if (!word)
 		return (NULL);
@@ -38,6 +40,8 @@ char	*get_word(char *input, size_t *i)
 	size_t	j;
 
 	len = ft_strlen_sep(input + *i, "|<>\'\" ");
+	if (len == 0)
+		return (NULL);
 	word = ft_calloc(sizeof(char), len + 1);
 	if (!word)
 		return (NULL);
@@ -57,6 +61,8 @@ char	*get_operator_word(char *input, size_t *i)
 	len = 0;
 	while (input[*i + len] && input[*i + len] == input[*i])
 		len++;
+	if (len == 0)
+		return (NULL);
 	word = ft_calloc(sizeof(char), len + 1);
 	if (!word)
 		return (NULL);
@@ -76,12 +82,17 @@ int	get_next_word(char *input, size_t *i, t_word **words)
 	else if (is_operator(input[*i]))
 	{
 		word = get_operator_word(input, i);
-		if (!word)
-			return (EXIT_FAILURE);
 		return (add_word(words, word, get_operator_token(word)));
 	}
 	else
 		word = get_word(input, i);
+	if (!word)
+		return (EXIT_FAILURE);
+	if (*i > ft_strlen(input))
+	{
+		free(word);
+		return (EXIT_FAILURE);
+	}
 	while (input[*i])
 	{
 		if (is_quote(input[*i]))
@@ -91,8 +102,6 @@ int	get_next_word(char *input, size_t *i, t_word **words)
 		else
 			break ;
 	}
-	if (!word)
-		return (EXIT_FAILURE);
 	return (add_word(words, word, WORD));
 }
 
@@ -109,9 +118,8 @@ t_word	*tokenize(char *input)
 			i++;
 		else
 		{
-			if (get_next_word(input, &i, &words) == EXIT_FAILURE)
-				return (NULL);
-			if (!input[i])
+			get_next_word(input, &i, &words);
+			if (i > ft_strlen(input) || !input[i])
 				break ;
 		}
 	}
