@@ -49,7 +49,7 @@ char	*test_paths(char *cmd, char **paths_env_var)
 	return (NULL);
 }
 
-char	*check_for_file(char *cmd)
+static char	*check_for_file(char *cmd)
 {
 	struct stat	path_stat;
 
@@ -60,14 +60,14 @@ char	*check_for_file(char *cmd)
 			if (access(cmd, F_OK | X_OK) == 0)
 				return (ft_strdup(cmd));
 		}
-		else if (S_ISDIR(path_stat.st_mode) && ft_strchr(cmd, '/'))
-			return (ft_strdup("dir"));
+		// else if (S_ISDIR(path_stat.st_mode) && ft_strchr(cmd, '/'))
+		// 	return (ft_strdup("dir"));
 	}
-	else if (ft_strchr(cmd, '/'))
-	{
-		if (access(cmd, F_OK) == -1)
-			return (ft_strdup("undir"));
-	}
+	// else if (ft_strchr(cmd, '/'))
+	// {
+	// 	if (access(cmd, F_OK) == -1)
+	// 		return (ft_strdup("undir"));
+	// }
 	return (NULL);
 }
 
