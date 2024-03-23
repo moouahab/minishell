@@ -12,6 +12,21 @@
 
 #include "../includes/shell.h"
 
+void	exit_heredoc(t_shell *shell, char *filename, t_cmd *new)
+{
+	free_words(shell->words);
+	free_env(&shell->env);
+	free_env(&shell->env_cpy);
+	free(filename);
+	free_cmds(shell->cmds);
+	close(shell->stdin_b);
+	close(shell->stdout_b);
+	free(shell);
+	free_tab2(new->av);
+	free(new);
+	exit(0);
+}
+
 bool	is_heredoc_end(char *input, char *filename, int fd, char *lim)
 {
 	if (g_signum == SIGINT)
@@ -34,16 +49,16 @@ bool	is_heredoc_end(char *input, char *filename, int fd, char *lim)
 	return (FALSE);
 }
 
+
 void	get_line(char *lim, int fd, t_shell *shell, char *filename)
 {
 	char	*input;
-
+	
+	signal(SIGINT, sigint_heredoc);
 	while (1)
 	{
-		signal(SIGINT, sigint_heredoc);
 		input = readline("heredoc> ");
 		dup2(shell->stdin_b, STDIN_FILENO);
-		signal(SIGINT, sigint_handler);
 		if (is_heredoc_end(input, filename, fd, lim))
 			break ;
 		input = expand(input, shell->env, shell);
@@ -80,6 +95,7 @@ t_cmd	*new_heredoc(t_cmd *new, t_word **words, t_shell *shell)
 {
 	int		heredoc_fd;
 	char	*tmpfile;
+	int		id;
 
 	if (new->typein == RD_AP_IN)
 		unlink(new->filein);
@@ -90,7 +106,15 @@ t_cmd	*new_heredoc(t_cmd *new, t_word **words, t_shell *shell)
 	}
 	tmpfile = ft_tmpfilename();
 	heredoc_fd = open(tmpfile, O_CREAT | O_RDWR | O_APPEND, 0644);
-	get_line((*words)->next->word, heredoc_fd, shell, tmpfile);
+	id = fork();
+	if (id == 0)
+	{
+		get_line((*words)->next->word, heredoc_fd, shell, tmpfile);
+		exit_heredoc(shell, tmpfile, new);
+	}
+	else
+		wait(NULL);
+	close(heredoc_fd);
 	new->filein = tmpfile;
 	new->typein = RD_AP_IN;
 	*words = (*words)->next;

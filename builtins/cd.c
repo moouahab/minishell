@@ -46,8 +46,12 @@ static int	check_update(char **cur_path, char (*new_pwd)[1024],
 	getcwd(*new_pwd, sizeof(*new_pwd));
 	if (ft_getenv("OLDPWD", *env))
 		update_value(env, "OLDPWD", ft_strdup(*old_pwd));
+	else
+		add_env(env, ft_strdup("OLDPWD"), ft_strdup(*old_pwd));
 	if (ft_getenv("PWD", *env))
 		update_value(env, "PWD", ft_strdup(*new_pwd));
+	else
+		add_env(env, ft_strdup("PWD"), ft_strdup(*new_pwd));
 	free(*cur_path);
 	return (0);
 }

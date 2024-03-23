@@ -124,5 +124,6 @@ char	*expand(char *input, t_env *env, t_shell *shell)
 			input = do_expand(input, &i, env, shell);
 		i++;
 	}
+	shell->ret_value = 0;
 	return (input);
 }

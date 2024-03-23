@@ -95,7 +95,7 @@ void	execute(t_cmd *cmds, t_shell *shell)
 		current->i = i;
 		if (current->av && ft_strcmp("echo", current->av[0]) && ft_getenv("_",
 				shell->env))
-			update_value(&shell->env, "_", ft_strdup(current->av[0]));
+			update_value(&shell->env, "_", ft_strdup(current->av[ft_strlen2(current->av) - 1]));
 		if (shell->pipe_count == 0 && current->av && is_builtin(current->av[0]))
 			exec_manager(current, shell, cur_word, FALSE);
 		else

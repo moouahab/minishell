@@ -64,6 +64,8 @@ t_cmd	*get_redirections(t_cmd *cmd, t_word *words, t_shell **shell)
 	while (current && current->token != PIPE)
 	{
 		cmd = get_out_rds(cmd, current, shell);
+		if (!cmd)
+			return (NULL);
 		if (current && current->token == RD_IN && (!current->next
 				|| current->next->token <= 5))
 		{

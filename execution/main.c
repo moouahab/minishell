@@ -73,6 +73,8 @@ int	main(int ac, char **av, char *const *envp)
 	shell->words = NULL;
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
+	if (ft_getenv("SHLVL", shell->env))
+		update_value(&shell->env, "SHLVL", ft_itoa(ft_atoi(ft_getenv("SHLVL", shell->env)) + 1));
 	while (1)
 	{
 		shell->cmds = NULL;

@@ -75,6 +75,7 @@ t_cmd	*get_out_rds(t_cmd *cmd, t_word *current, t_shell **shell)
 	{
 		(*shell)->ret_value = 1;
 		close_heredoc(cmd);
+		close(cmd->fdout);
 		write(2, "minishell: ambiguous redirect\n", 30);
 		return (NULL);
 	}

@@ -38,6 +38,8 @@ int	run(char **av, t_shell *shell)
 	int	status;
 
 	id = fork();
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	if (id == 0)
 	{
 		close(shell->stdin_b);
@@ -56,5 +58,10 @@ int	run(char **av, t_shell *shell)
 		if (WIFEXITED(status))
 			status = WEXITSTATUS(status);
 	}
+	signal(SIGINT, sigint_handler2);
+	if (shell->pipe_count == 0)
+		signal(SIGQUIT, sigquit_handler);
+	else
+		signal(SIGQUIT, sigquit_handler2);
 	return (status);
 }
