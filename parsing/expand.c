@@ -20,7 +20,7 @@ char	*replace_value(char *str, char *value, size_t start, size_t len)
 		len = 1;
 	else
 	{
-		while (str[start + len] && str[start + len] != ' ' && str[start
+		while (str[start + len] && !is_whitespace(str[start + len]) && str[start
 				+ len] != '\'' && str[start + len] != '\"'
 			&& str[start + len] != '$')
 		{
@@ -47,7 +47,7 @@ void	get_user_var_len(char *input, size_t *i, size_t *j)
 		(*i)++;
 		(*j)++;
 	}
-	while (input[*j] && input[*j] != ' ' && input[*j] != 39 && input[*j] != 34
+	while (input[*j] && !is_whitespace(input[*j]) && input[*j] != 39 && input[*j] != 34
 		&& (ft_isalnum(input[*j]) || input[*j] == '_'))
 	{
 		(*i)++;
@@ -118,8 +118,8 @@ char	*expand(char *input, t_env *env, t_shell *shell)
 			&& !is_in_double && !is_in_single && !is_limiter(input, i,
 				is_in_double))
 			input = del_char(input, i);
-		if (input[i] == '$' && input[i + 1] && input[i + 1] != ' ' && input[i
-				+ 1] != '$' && !is_quote(input[i + 1]) && !is_in_single
+		if (input[i] == '$' && input[i + 1] && !is_whitespace(input[i + 1]) && input[i
+				+ 1] != '$' && (ft_isalnum(input[i + 1]) || input[i + 1] == '?' || input[i + 1] == '_')&& !is_quote(input[i + 1]) && !is_in_single
 			&& !is_limiter(input, i, is_in_double))
 			input = do_expand(input, &i, env, shell);
 		i++;

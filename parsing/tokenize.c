@@ -42,7 +42,7 @@ char	*get_word(char *input, size_t *i)
 	size_t	len;
 	size_t	j;
 
-	len = ft_strlen_sep(input + *i, "|<>\'\" ");
+	len = ft_strlen_sep(input + *i, "|<>\'\" \t");
 	if (len == 0)
 		return (NULL);
 	word = ft_calloc(sizeof(char), len + 1);
@@ -97,7 +97,7 @@ int	get_next_word(char *input, size_t *i, t_word **words)
 	{
 		if (is_quote(input[*i]))
 			word = ft_strjoin(word, get_quoted_word(input, i, input[*i]));
-		else if (!is_operator(input[*i]) && input[*i] != ' ')
+		else if (!is_operator(input[*i]) && !is_whitespace(input[*i]))
 			word = ft_strjoin(word, get_word(input, i));
 		else
 			break ;
@@ -114,7 +114,7 @@ t_word	*tokenize(char *input)
 	words = NULL;
 	while (input[i])
 	{
-		if (input[i] == ' ')
+		if (is_whitespace(input[i]))
 			i++;
 		else
 		{

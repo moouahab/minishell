@@ -30,11 +30,17 @@ static int	check_error(char *key)
 		i++;
 	}
 	if (ft_isdigit(key[i]) || (!ft_isalnum(key[i]) && key[i] != '_' && key[i] != '+'))
+	{
+		write(2, "export: '", 9);
+		write(2, key, ft_strlen(key));
+		write(2, "': not a valid identifier\n", 26);
+		free(key);
 		return (1);
+	}
 	return (0);
 }
 
-void	add_or_update(char *key, char *value, char *var, t_shell *shell)
+char	*add_to_prev_value(char *key, char *value, t_shell *shell)
 {
 	if (key[ft_strlen(key) - 1] == '+')
 	{
@@ -44,6 +50,12 @@ void	add_or_update(char *key, char *value, char *var, t_shell *shell)
 		else
 			value = ft_strdup(ft_getenv(key, shell->env));
 	}
+	return (value);
+}
+
+void	add_or_update(char *key, char *value, char *var, t_shell *shell)
+{
+	value = add_to_prev_value(key, value, shell);
 	if (!value)
 	{
 		if (ft_strchr(var, '='))

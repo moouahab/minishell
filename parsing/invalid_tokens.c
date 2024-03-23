@@ -28,7 +28,7 @@ bool	is_valid_pipe(char *input, size_t i)
 		return (FALSE);
 	if (is_redirector(input[i - 1]))
 		return (FALSE);
-	if (input[i - 1] == ' ' && is_redirector(input[skip_spaces(input, i - 1,
+	if (is_whitespace(input[i - 1]) && is_redirector(input[skip_spaces(input, i - 1,
 					'-')]))
 		return (FALSE);
 	return (TRUE);
@@ -40,13 +40,19 @@ bool	is_valid_redirector(char *input, size_t i, char rd)
 		return (FALSE);
 	if (input[i + 1] == rd && !input[skip_spaces(input, i + 2, '+')])
 		return (FALSE);
+	if (input[i + 1] == rd && input[i + 2] && input[i + 2] == rd)
+		return (FALSE);
 	return (TRUE);
 }
 
-char	check_operators(char *input, size_t i)
+int		check_operators(char *input, size_t i)
 {
 	if (input[i] == '|' && !is_valid_pipe(input, i))
 		return ('|');
+	if (input[i] == '>' && input[i + 1] && input[i + 1] == '>' && !is_valid_redirector(input, i, '>'))
+		return (2);
+	if (input[i] == '<' && input[i + 1] && input[i + 1] == '<' && !is_valid_redirector(input, i, '<'))
+		return (3);
 	if (input[i] == '>' && !is_valid_redirector(input, i, '>'))
 		return ('>');
 	if (input[i] == '<' && !is_valid_redirector(input, i, '<'))
@@ -54,7 +60,7 @@ char	check_operators(char *input, size_t i)
 	return ('\0');
 }
 
-int	check_invalid_tokens(char *input)
+int		check_invalid_tokens(char *input)
 {
 	char	*invalid_tokens;
 	size_t	i;

@@ -76,7 +76,7 @@ int	is_unknown_cmd(t_cmd *cmd, t_shell *shell, bool is_forked)
 		return (1);
 	if (is_undir(cmd, is_forked, shell) == 1)
 		return (1);
-	if (!is_builtin(cmd->av[0]) && (!cmd->path || !ft_strcmp(cmd->path, "dir"))
+	if (!is_builtin(cmd->av[0]) && (!cmd->path || !ft_strcmp(cmd->av[0], ".") || !ft_strcmp(cmd->path, "dir"))
 		&& !ft_strchr(cmd->av[0], '/'))
 	{
 		write(2, "minishell: command not found: ", 30);

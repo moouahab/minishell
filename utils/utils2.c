@@ -71,3 +71,10 @@ int	ft_strcmp(char *s1, char *s2)
 	}
 	return (0);
 }
+
+bool	is_whitespace(char c)
+{
+	if (c == 32 || c == 9 || c == 11)
+		return (TRUE);
+	return (FALSE);
+}

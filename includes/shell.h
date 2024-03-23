@@ -209,5 +209,6 @@ int					bn_unset(char **argv, t_shell *shell);
 int					bn_export(char **argv, t_shell *shell);
 int					bn_exit(char **av, t_shell *shell, bool is_forked);
 int					run(char **av, t_shell *shell);
+bool				is_whitespace(char c);
 
 #endif

@@ -13,6 +13,7 @@
 #include "../includes/shell.h"
 #include <limits.h>
 
+
 int	is_invalid_arg(char *arg)
 {
 	size_t	i;
@@ -50,6 +51,34 @@ void	free_exit(t_shell *shell)
 	free(shell);
 }
 
+static long long int	ft_atol(const char *str, t_shell *shell)
+{
+	long long int	res;
+	long long int	sign;
+
+	res = 0;
+	sign = 1;
+	if (*str == '+' || *str == '-')
+	{
+		if (*str == '-')
+			sign = -1;
+		str++;
+	}
+	while (*str >= '0' && *str <= '9')
+	{
+		if ((sign == 1 && (res * 10 + (*str - '0')) < 0) || (sign == -1 && (res
+					* 10 + (*str - '0')) * sign >= 0))
+		{
+			write(2, "minishell: exit: numeric arguments required\n", 44);
+			free_exit(shell);
+			exit(2);
+		}
+		res = res * 10 + (*str - '0');
+		str++;
+	}
+	return (res * sign);
+}
+
 int	bn_exit(char **av, t_shell *shell, bool is_forked)
 {
 	int	status;
@@ -67,7 +96,7 @@ int	bn_exit(char **av, t_shell *shell, bool is_forked)
 		return (status);
 	}
 	else if (av[1])
-		status = ft_atol(av[1]);
+		status = ft_atol(av[1], shell);
 	if (is_forked == FALSE)
 		free_pipes(shell->pfd, shell->pipe_count);
 	free_exit(shell);

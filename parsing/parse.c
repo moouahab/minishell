@@ -31,12 +31,12 @@ size_t	skip_spaces(char *input, size_t i, char dir)
 {
 	if (dir == '+')
 	{
-		while (input[i] && input[i] == ' ')
+		while (input[i] && is_whitespace(input[i]))
 			i++;
 	}
 	else if (dir == '-')
 	{
-		while (i != 0 && input[i] == ' ')
+		while (i != 0 && is_whitespace(input[i]))
 			i--;
 	}
 	return (i);
@@ -58,7 +58,20 @@ t_word	*parse(char *input, t_env *env, t_shell *shell)
 			words = tokenize(input);
 		}
 		else if (c == '\n')
+		{
+			shell->ret_value = 2;
 			printf("minishell: syntax error near unexpected token 'newline'\n");
+		}
+		else if (c == 2)
+		{
+			shell->ret_value = 2;
+			printf("minishell: syntax error near unexpected token '>>'\n");
+		}
+		else if (c == 3)
+		{
+			shell->ret_value = 2;
+			printf("minishell: syntax error near unexpected token '<<'\n");
+		}
 		else
 		{
 			shell->ret_value = 2;
