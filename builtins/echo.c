@@ -15,13 +15,24 @@
 
 int	check_n_option(char *arg)
 {
-	if (!ft_strncmp(arg, "-n", 2))
-		return (1);
-	return (0);
+	size_t	i;
+
+	i = 0;
+	if (arg[i] != '-')
+		return (0);
+	i++;
+	while (arg[i])
+	{
+		if (arg[i] != 'n')
+			return (0);
+		i++;
+	}
+	return (1);
 }
 
 void	check_options(char **argv, size_t *i)
 {
+	
 	while (argv[*i])
 	{
 		if (check_n_option(argv[*i]) == 0)

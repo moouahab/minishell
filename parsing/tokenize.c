@@ -21,7 +21,10 @@ char	*get_quoted_word(char *input, size_t *i, char quote)
 	(*i)++;
 	len = ft_strlen_c(input + *i, quote);
 	if (len == 0)
+	{
+		(*i)++;
 		return (NULL);
+	}
 	word = ft_calloc(sizeof(char), len + 1);
 	if (!word)
 		return (NULL);
@@ -89,11 +92,8 @@ int	get_next_word(char *input, size_t *i, t_word **words)
 	if (!word)
 		return (EXIT_FAILURE);
 	if (*i > ft_strlen(input))
-	{
-		free(word);
 		return (EXIT_FAILURE);
-	}
-	while (input[*i])
+	while (*i < ft_strlen(input))
 	{
 		if (is_quote(input[*i]))
 			word = ft_strjoin(word, get_quoted_word(input, i, input[*i]));

@@ -17,7 +17,7 @@ static int	check_error(char *key)
 	size_t	i;
 
 	i = 0;
-	while (key[i])
+	while (key[i] && i < ft_strlen(key) - 1)
 	{
 		if (ft_isdigit(key[i]) || (!ft_isalnum(key[i]) && key[i] != '_'))
 		{
@@ -29,11 +29,21 @@ static int	check_error(char *key)
 		}
 		i++;
 	}
+	if (ft_isdigit(key[i]) || (!ft_isalnum(key[i]) && key[i] != '_' && key[i] != '+'))
+		return (1);
 	return (0);
 }
 
 void	add_or_update(char *key, char *value, char *var, t_shell *shell)
 {
+	if (key[ft_strlen(key) - 1] == '+')
+	{
+		ft_strlcpy(key, key, ft_strlen(key));
+		if (value)
+			value = ft_strjoin(ft_strdup(ft_getenv(key, shell->env)), value);
+		else
+			value = ft_strdup(ft_getenv(key, shell->env));
+	}
 	if (!value)
 	{
 		if (ft_strchr(var, '='))
