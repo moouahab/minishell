@@ -32,14 +32,28 @@ static void	check_file(char **av)
 	}
 }
 
+void	init_signals(void)
+{
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+}
+
+void	close_signals(t_shell *shell)
+{
+	signal(SIGINT, sigint_handler2);
+	if (shell->pipe_count == 0)
+		signal(SIGQUIT, sigquit_handler);
+	else
+		signal(SIGQUIT, sigquit_handler2);
+}
+
 int	run(char **av, t_shell *shell)
 {
 	int	id;
 	int	status;
 
+	init_signals();
 	id = fork();
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
 	if (id == 0)
 	{
 		close(shell->stdin_b);
@@ -58,10 +72,6 @@ int	run(char **av, t_shell *shell)
 		if (WIFEXITED(status))
 			status = WEXITSTATUS(status);
 	}
-	signal(SIGINT, sigint_handler2);
-	if (shell->pipe_count == 0)
-		signal(SIGQUIT, sigquit_handler);
-	else
-		signal(SIGQUIT, sigquit_handler2);
+	close_signals(shell);
 	return (status);
 }

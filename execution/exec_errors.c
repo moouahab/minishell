@@ -16,8 +16,8 @@ static int	check_for_dir(char *cmd)
 {
 	struct stat	path_stat;
 
-	// if (cmd[ft_strlen(cmd) - 1] == '/')
-	// 	ft_strlcpy(cmd, cmd, ft_strlen(cmd));
+	if (is_regfile_with_slash(cmd) && ft_strchr(cmd, '/'))
+		return (3);
 	if (lstat(cmd, &path_stat) == 0)
 	{
 		if (S_ISREG(path_stat.st_mode))
@@ -54,7 +54,7 @@ static int	is_undir(t_cmd *cmd, bool is_forked, t_shell *shell)
 	return (0);
 }
 
-static int is_not_dir(t_cmd *cmd, bool is_forked, t_shell *shell)
+static int	is_not_dir(t_cmd *cmd, bool is_forked, t_shell *shell)
 {
 	if (check_for_dir(cmd->av[0]) == 3)
 	{
@@ -98,7 +98,8 @@ int	is_unknown_cmd(t_cmd *cmd, t_shell *shell, bool is_forked)
 		return (1);
 	if (is_undir(cmd, is_forked, shell) == 1)
 		return (1);
-	if (!is_builtin(cmd->av[0]) && (!cmd->path || !ft_strcmp(cmd->av[0], ".") || !ft_strcmp(cmd->av[0], "..") || !ft_strcmp(cmd->path, "dir"))
+	if (!is_builtin(cmd->av[0]) && (!cmd->path || !ft_strcmp(cmd->av[0], ".")
+			|| !ft_strcmp(cmd->av[0], "..") || !ft_strcmp(cmd->path, "dir"))
 		&& !ft_strchr(cmd->av[0], '/'))
 	{
 		write(2, "minishell: command not found: ", 30);

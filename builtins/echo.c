@@ -32,7 +32,6 @@ int	check_n_option(char *arg)
 
 void	check_options(char **argv, size_t *i)
 {
-	
 	while (argv[*i])
 	{
 		if (check_n_option(argv[*i]) == 0)

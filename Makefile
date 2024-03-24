@@ -8,11 +8,11 @@ SRC_DIR = builtins env_utils execution parsing signals utils
 
 OBJ_DIR = obj
 
-SRC = builtins/cd.c builtins/echo.c builtins/env.c builtins/exit.c builtins/export.c \
+SRC = builtins/export_utils.c builtins/cd.c builtins/echo.c builtins/env.c builtins/exit.c builtins/export.c \
     builtins/pwd.c builtins/run.c builtins/unset.c \
     env_utils/env.c env_utils/env_utils.c env_utils/env_utils2.c \
     execution/redirections_utils.c execution/exec_errors.c execution/execute.c execution/exec_utils.c execution/heredoc.c \
-    execution/redirections.c execution/init_and_free.c execution/init_pipes.c execution/main.c execution/pipe_manager.c \
+    execution/redirections.c execution/check_directories.c execution/init_and_free.c execution/init_pipes.c execution/main.c execution/pipe_manager.c \
     parsing/expand.c parsing/expand_utils.c parsing/free_utils.c parsing/init_cmds.c \
     parsing/init_cmds_utils.c parsing/invalid_tokens.c parsing/parse.c parsing/tokenize.c parsing/tokenize_utils.c \
     signals/sighandlers.c signals/signals.c \

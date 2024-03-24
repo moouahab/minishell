@@ -168,6 +168,11 @@ void				sigquit_handler2(int signum);
 // exec_errors :
 int					is_unknown_cmd(t_cmd *cmd, t_shell *shell, bool is_forked);
 
+// check_directories :
+bool				is_regfile_with_slash(char *cmd);
+void				check_filetype(char *file);
+bool				is_directory(char *filename);
+
 // redirections_utils :
 t_cmd				*get_out_rds(t_cmd *cmd, t_word *current, t_shell **shell);
 int					check_in(t_cmd **cmd, t_word *current, t_shell **shell);
@@ -176,13 +181,16 @@ bool				can_rd_out(char *filename);
 
 // execute :
 void				execute(t_cmd *cmds, t_shell *shell);
-t_cmd	*heredoc_manager(t_cmd *new, t_word *words, t_shell *shell, t_cmd **cmds);
+t_cmd				*heredoc_manager(t_cmd *new, t_word *words, t_shell *shell,
+						t_cmd **cmds);
 t_cmd				*get_redirections(t_cmd *cmd, t_word *words,
 						t_shell **shell);
 void				pipe_manager(t_shell *shell, size_t i);
 void				wait_for_children(t_shell *shell, pid_t *ids);
 t_shell				*init_exec(t_shell *shell, t_cmd *cmds);
 void				free_exec(t_shell *shell, t_cmd *cmds);
+void				close_heredoc(t_cmd *cmd);
+void				exit_heredoc(t_shell *shell, char *filename, t_cmd *new);
 
 // exec_utils :
 bool				is_builtin(char *cmd);
@@ -207,6 +215,8 @@ int					bn_env(char **argv, t_env *env);
 int					bn_pwd(char **av, t_env *env);
 int					bn_unset(char **argv, t_shell *shell);
 int					bn_export(char **argv, t_shell *shell);
+void				print_env_var(t_env *current);
+char				*add_to_prev_value(char *key, char *value, t_shell *shell);
 int					bn_exit(char **av, t_shell *shell, bool is_forked);
 int					run(char **av, t_shell *shell);
 bool				is_whitespace(char c);

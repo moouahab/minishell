@@ -12,21 +12,6 @@
 
 #include "../includes/shell.h"
 
-void	exit_heredoc(t_shell *shell, char *filename, t_cmd *new)
-{
-	free_words(shell->words);
-	free_env(&shell->env);
-	free_env(&shell->env_cpy);
-	free(filename);
-	free_cmds(shell->cmds);
-	close(shell->stdin_b);
-	close(shell->stdout_b);
-	free(shell);
-	free_tab2(new->av);
-	free(new);
-	exit(0);
-}
-
 bool	is_heredoc_end(char *input, char *filename, int fd, char *lim)
 {
 	if (g_signum == SIGINT)
@@ -49,11 +34,10 @@ bool	is_heredoc_end(char *input, char *filename, int fd, char *lim)
 	return (FALSE);
 }
 
-
 void	get_line(char *lim, int fd, t_shell *shell, char *filename)
 {
 	char	*input;
-	
+
 	signal(SIGINT, sigint_heredoc);
 	while (1)
 	{
@@ -91,11 +75,10 @@ char	*ft_tmpfilename(void)
 	return (ft_strdup(filename));
 }
 
-t_cmd	*new_heredoc(t_cmd *new, t_word **words, t_shell *shell)
+t_cmd	*new_heredoc(t_cmd *new, t_word **words, t_shell *shell, int id)
 {
 	int		heredoc_fd;
 	char	*tmpfile;
-	int		id;
 
 	if (new->typein == RD_AP_IN)
 		unlink(new->filein);
@@ -121,7 +104,8 @@ t_cmd	*new_heredoc(t_cmd *new, t_word **words, t_shell *shell)
 	return (new);
 }
 
-t_cmd	*heredoc_manager(t_cmd *new, t_word *words, t_shell *shell, t_cmd **cmds)
+t_cmd	*heredoc_manager(t_cmd *new, t_word *words, t_shell *shell,
+		t_cmd **cmds)
 {
 	t_word	*cur_word;
 
@@ -132,7 +116,7 @@ t_cmd	*heredoc_manager(t_cmd *new, t_word *words, t_shell *shell, t_cmd **cmds)
 	while (cur_word && cur_word->token != PIPE)
 	{
 		if (cur_word->token == RD_AP_IN)
-			new = new_heredoc(new, &cur_word, shell);
+			new = new_heredoc(new, &cur_word, shell, 0);
 		if (cur_word->token == RD_IN)
 		{
 			if (new->typein == RD_AP_IN)

@@ -34,12 +34,6 @@ int	do_execute(t_cmd *cmd, t_shell *shell, bool is_forked, int e_status)
 	return (e_status);
 }
 
-void	close_heredoc(t_cmd *cmd)
-{
-	if (cmd->typein == RD_AP_IN && cmd->filein)
-		unlink(cmd->filein);
-}
-
 void	exec_manager(t_cmd *cmd, t_shell *shell, t_word *words, bool is_forked)
 {
 	int	e_status;
@@ -78,6 +72,14 @@ t_shell	*fork_and_execute(t_shell *shell, t_word *current, t_cmd *cmd, size_t i)
 	return (shell);
 }
 
+void	update_last_func(t_cmd *current, t_shell *shell)
+{
+	if (current->av && ft_strcmp("echo", current->av[0]) && ft_getenv("_",
+			shell->env))
+		update_value(&shell->env, "_",
+			ft_strdup(current->av[ft_strlen2(current->av) - 1]));
+}
+
 void	execute(t_cmd *cmds, t_shell *shell)
 {
 	t_cmd	*current;
@@ -93,9 +95,7 @@ void	execute(t_cmd *cmds, t_shell *shell)
 	while (current)
 	{
 		current->i = i;
-		if (current->av && ft_strcmp("echo", current->av[0]) && ft_getenv("_",
-				shell->env))
-			update_value(&shell->env, "_", ft_strdup(current->av[ft_strlen2(current->av) - 1]));
+		update_last_func(current, shell);
 		if (shell->pipe_count == 0 && current->av && is_builtin(current->av[0]))
 			exec_manager(current, shell, cur_word, FALSE);
 		else

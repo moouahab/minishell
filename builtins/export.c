@@ -29,7 +29,8 @@ static int	check_error(char *key)
 		}
 		i++;
 	}
-	if (ft_isdigit(key[i]) || (!ft_isalnum(key[i]) && key[i] != '_' && key[i] != '+'))
+	if (ft_isdigit(key[i]) || (!ft_isalnum(key[i]) && key[i] != '_'
+			&& key[i] != '+'))
 	{
 		write(2, "export: '", 9);
 		write(2, key, ft_strlen(key));
@@ -40,17 +41,13 @@ static int	check_error(char *key)
 	return (0);
 }
 
-char	*add_to_prev_value(char *key, char *value, t_shell *shell)
+void	add_empty_value_to_env(char *key, t_shell *shell, char *value,
+		char *var)
 {
-	if (key[ft_strlen(key) - 1] == '+')
-	{
-		ft_strlcpy(key, key, ft_strlen(key));
-		if (value)
-			value = ft_strjoin(ft_strdup(ft_getenv(key, shell->env)), value);
-		else
-			value = ft_strdup(ft_getenv(key, shell->env));
-	}
-	return (value);
+	if (is_in_env(key, shell->env))
+		update_value(&shell->env, key, ft_strdup(value));
+	else if (ft_strchr(var, '='))
+		add_env(&shell->env, ft_strdup(key), ft_strdup(value));
 }
 
 void	add_or_update(char *key, char *value, char *var, t_shell *shell)
@@ -60,8 +57,7 @@ void	add_or_update(char *key, char *value, char *var, t_shell *shell)
 	{
 		if (ft_strchr(var, '='))
 			value = ft_strdup("");
-		if (is_in_env(key, shell->env))
-			update_value(&shell->env, key, ft_strdup(value));
+		add_empty_value_to_env(key, shell, value, var);
 		if (is_in_env(key, shell->env_cpy))
 			update_value(&shell->env_cpy, key, ft_strdup(value));
 		else
@@ -96,14 +92,6 @@ int	do_export(char *var, t_shell *shell)
 	add_or_update(key, value, var, shell);
 	free(key);
 	return (0);
-}
-
-void	print_env_var(t_env *current)
-{
-	printf("export %s", current->key);
-	if (current->value)
-		printf("=\"%s\"", current->value);
-	printf("\n");
 }
 
 int	bn_export(char **argv, t_shell *shell)

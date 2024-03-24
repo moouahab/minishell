@@ -47,3 +47,24 @@ void	free_exec(t_shell *shell, t_cmd *cmds)
 	signal(SIGINT, sigint_handler);
 	signal(SIGQUIT, SIG_IGN);
 }
+
+void	close_heredoc(t_cmd *cmd)
+{
+	if (cmd->typein == RD_AP_IN && cmd->filein)
+		unlink(cmd->filein);
+}
+
+void	exit_heredoc(t_shell *shell, char *filename, t_cmd *new)
+{
+	free_words(shell->words);
+	free_env(&shell->env);
+	free_env(&shell->env_cpy);
+	free(filename);
+	free_cmds(shell->cmds);
+	close(shell->stdin_b);
+	close(shell->stdout_b);
+	free(shell);
+	free_tab2(new->av);
+	free(new);
+	exit(0);
+}

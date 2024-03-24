@@ -12,18 +12,6 @@
 
 #include "../includes/shell.h"
 
-bool	is_directory(char *filename)
-{
-	struct stat	path_stat;
-
-	if (lstat(filename, &path_stat) == 0)
-	{
-		if (S_ISDIR(path_stat.st_mode))
-			return (TRUE);
-	}
-	return (FALSE);
-}
-
 bool	can_rd_out(char *filename)
 {
 	if (ft_strchr(filename, '/') || is_directory(filename))
@@ -38,20 +26,11 @@ bool	can_rd_out(char *filename)
 	return (TRUE);
 }
 
-void	check_filetype(char *file)
+void	ambiguous_redirect(t_cmd *cmd, t_shell **shell)
 {
-	if (access(file, F_OK) == -1)
-	{
-		write(2, "minishell: no such file or directory: ", 38);
-		write(2, file, ft_strlen(file));
-		write(2, "\n", 1);
-	}
-	else
-	{
-		write(2, "minishell: ", 12);
-		write(2, file, ft_strlen(file));
-		write(2, ": is a directory\n", 17);
-	}
+	close_heredoc(cmd);
+	write(2, "minishell: ambiguous redirect\n", 30);
+	(*shell)->ret_value = 1;
 }
 
 t_cmd	*get_redirections(t_cmd *cmd, t_word *words, t_shell **shell)
@@ -69,9 +48,7 @@ t_cmd	*get_redirections(t_cmd *cmd, t_word *words, t_shell **shell)
 		if (current && current->token == RD_IN && (!current->next
 				|| current->next->token <= 5))
 		{
-			close_heredoc(cmd);
-			write(2, "minishell: ambiguous redirect\n", 30);
-			(*shell)->ret_value = 1;
+			ambiguous_redirect(cmd, shell);
 			return (NULL);
 		}
 		if (current && current->token == RD_IN)

@@ -6,7 +6,7 @@
 /*   By: moouahab <moouahab@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/15 08:58:20 by rbenoit           #+#    #+#             */
-/*   Updated: 2024/03/22 16:54:03 by moouahab         ###   ########.fr       */
+/*   Updated: 2024/03/24 11:50:12 by rbenoit          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,15 @@ t_shell	*init_shell(char *const *envp)
 	if (!shell)
 		return (NULL);
 	shell->env = init_env(envp);
+	if (ft_getenv("SHLVL", shell->env))
+		update_value(&shell->env, "SHLVL", ft_itoa(ft_atoi(ft_getenv("SHLVL",
+						shell->env)) + 1));
 	shell->env_cpy = env_cpy(shell->env);
 	shell->stdin_b = dup(STDIN_FILENO);
 	shell->stdout_b = dup(STDOUT_FILENO);
 	shell->ret_value = 0;
+	signal(SIGINT, sigint_handler);
+	signal(SIGQUIT, SIG_IGN);
 	return (shell);
 }
 
@@ -71,14 +76,10 @@ int	main(int ac, char **av, char *const *envp)
 	(void)av;
 	shell = init_shell(envp);
 	shell->words = NULL;
-	signal(SIGINT, sigint_handler);
-	signal(SIGQUIT, SIG_IGN);
-	if (ft_getenv("SHLVL", shell->env))
-		update_value(&shell->env, "SHLVL", ft_itoa(ft_atoi(ft_getenv("SHLVL", shell->env)) + 1));
 	while (1)
 	{
 		shell->cmds = NULL;
-		input = readline("minishell$ ");
+		input = readline("\033[35mminishell$\033[0m ");
 		handle_signals(input, shell);
 		shell->words = parse(input, shell->env, shell);
 		if (!shell->words)

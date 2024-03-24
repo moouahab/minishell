@@ -13,7 +13,6 @@
 #include "../includes/shell.h"
 #include <limits.h>
 
-
 int	is_invalid_arg(char *arg)
 {
 	size_t	i;

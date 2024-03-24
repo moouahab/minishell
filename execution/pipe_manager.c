@@ -46,6 +46,11 @@ void	wait_for_children(t_shell *shell, pid_t *ids)
 				shell->ret_value = 130;
 				g_signum = 0;
 			}
+			if (g_signum == SIGQUIT)
+			{
+				shell->ret_value = 131;
+				g_signum = 0;
+			}
 			else
 				shell->ret_value = WEXITSTATUS(e_status);
 		}

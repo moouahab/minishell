@@ -38,7 +38,6 @@ void	sigint_heredoc(int signum)
 	if (signum == SIGINT)
 	{
 		g_signum = SIGINT;
-		// write(0, "\n", 1);
 		close(STDIN_FILENO);
 	}
 }

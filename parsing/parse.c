@@ -42,6 +42,30 @@ size_t	skip_spaces(char *input, size_t i, char dir)
 	return (i);
 }
 
+void	print_syntax_errors(char c, t_shell *shell)
+{
+	if (c == '\n')
+	{
+		shell->ret_value = 2;
+		printf("minishell: syntax error near unexpected token 'newline'\n");
+	}
+	else if (c == 2)
+	{
+		shell->ret_value = 2;
+		printf("minishell: syntax error near unexpected token '>>'\n");
+	}
+	else if (c == 3)
+	{
+		shell->ret_value = 2;
+		printf("minishell: syntax error near unexpected token '<<'\n");
+	}
+	else
+	{
+		shell->ret_value = 2;
+		printf("minishell: syntax error near unexpected token '%c'\n", c);
+	}
+}
+
 t_word	*parse(char *input, t_env *env, t_shell *shell)
 {
 	char	c;
@@ -57,26 +81,8 @@ t_word	*parse(char *input, t_env *env, t_shell *shell)
 			input = expand(input, env, shell);
 			words = tokenize(input);
 		}
-		else if (c == '\n')
-		{
-			shell->ret_value = 2;
-			printf("minishell: syntax error near unexpected token 'newline'\n");
-		}
-		else if (c == 2)
-		{
-			shell->ret_value = 2;
-			printf("minishell: syntax error near unexpected token '>>'\n");
-		}
-		else if (c == 3)
-		{
-			shell->ret_value = 2;
-			printf("minishell: syntax error near unexpected token '<<'\n");
-		}
 		else
-		{
-			shell->ret_value = 2;
-			printf("minishell: syntax error near unexpected token '%c'\n", c);
-		}
+			print_syntax_errors(c, shell);
 	}
 	free(input);
 	return (words);
