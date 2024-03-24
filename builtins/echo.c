@@ -21,6 +21,8 @@ int	check_n_option(char *arg)
 	if (arg[i] != '-')
 		return (0);
 	i++;
+	if (!arg[i])
+		return (0);
 	while (arg[i])
 	{
 		if (arg[i] != 'n')

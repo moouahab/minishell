@@ -39,21 +39,18 @@ void	wait_for_children(t_shell *shell, pid_t *ids)
 	i = 0;
 	while (i < shell->pipe_count + 1)
 	{
-		if (waitpid(ids[i++], &e_status, 0) != -1)
+		if (g_signum == SIGINT)
 		{
-			if (g_signum == SIGINT)
-			{
-				shell->ret_value = 130;
-				g_signum = 0;
-			}
-			if (g_signum == SIGQUIT)
-			{
-				shell->ret_value = 131;
-				g_signum = 0;
-			}
-			else
-				shell->ret_value = WEXITSTATUS(e_status);
+			shell->ret_value = 130;
+			g_signum = 0;
 		}
+		else if (g_signum == SIGQUIT)
+		{
+			shell->ret_value = 131;
+			g_signum = 0;
+		}
+		else if (waitpid(ids[i++], &e_status, 0) != -1)
+			shell->ret_value = WEXITSTATUS(e_status);
 	}
 	free(ids);
 }

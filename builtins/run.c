@@ -47,6 +47,18 @@ void	close_signals(t_shell *shell)
 		signal(SIGQUIT, sigquit_handler2);
 }
 
+void	exit_fork(t_shell *shell)
+{
+	free_words(shell->words);
+	free_env(&shell->env);
+	free_env(&shell->env_cpy);
+	free(shell->ids);
+	free_cmds(shell->cmds);
+	free_tab2(shell->envp);
+	free(shell);
+	exit(126);
+}
+
 int	run(char **av, t_shell *shell)
 {
 	int	id;
@@ -63,7 +75,7 @@ int	run(char **av, t_shell *shell)
 		{
 			write(2, "minishell: ", 11);
 			perror(av[0]);
-			exit(126);
+			exit_fork(shell);
 		}
 	}
 	else
