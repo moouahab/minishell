@@ -24,7 +24,7 @@ void	add_cmd(t_cmd **cmds, char **av, t_shell *shell, t_word *words)
 	new->fdout = 1;
 	new->i = 0;
 	new->filein = NULL;
-	new = heredoc_manager(new, words, shell);
+	new = heredoc_manager(new, words, shell, cmds);
 	if (av)
 		new->path = get_path(av[0], shell->env);
 	else

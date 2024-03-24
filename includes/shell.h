@@ -176,7 +176,7 @@ bool				can_rd_out(char *filename);
 
 // execute :
 void				execute(t_cmd *cmds, t_shell *shell);
-t_cmd				*heredoc_manager(t_cmd *new, t_word *words, t_shell *shell);
+t_cmd	*heredoc_manager(t_cmd *new, t_word *words, t_shell *shell, t_cmd **cmds);
 t_cmd				*get_redirections(t_cmd *cmd, t_word *words,
 						t_shell **shell);
 void				pipe_manager(t_shell *shell, size_t i);

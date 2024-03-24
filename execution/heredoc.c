@@ -121,13 +121,14 @@ t_cmd	*new_heredoc(t_cmd *new, t_word **words, t_shell *shell)
 	return (new);
 }
 
-t_cmd	*heredoc_manager(t_cmd *new, t_word *words, t_shell *shell)
+t_cmd	*heredoc_manager(t_cmd *new, t_word *words, t_shell *shell, t_cmd **cmds)
 {
 	t_word	*cur_word;
 
 	cur_word = words;
 	new->filein = NULL;
 	new->typein = -1;
+	shell->cmds = *cmds;
 	while (cur_word && cur_word->token != PIPE)
 	{
 		if (cur_word->token == RD_AP_IN)
