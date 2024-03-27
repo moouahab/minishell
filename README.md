@@ -119,7 +119,7 @@ minishell$  $PATH/home/moouahab moouahab
 
 The execution process retrieves the already processed tokenization. It stores all commands along with their arguments, paths, file descriptors, and other relevant information in a linked list.
 
-```
+```c
 typedef struct s_cmd
 {
 	char			**av;
@@ -146,7 +146,7 @@ A "pipe" is a communication mechanism that allows the standard output of one pro
 
 Implementing multipipe involves creating a pipeline of processes, where the standard output of each process is redirected to the standard input of the next process using pipes. This allows for chaining the execution of multiple commands seamlessly, as if they were executed sequentially.
 
-```
+```c
 void	pipe_manager(t_shell *shell, size_t i)
 {
 	if (!shell->pfd)
